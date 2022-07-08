@@ -63,16 +63,16 @@ public class Student {
             //Insert 4 record with name and surname
             System.out.println("Inserting records into the table");
 
-            String sql = "INSERT INTO students VALUES (1, 'Bruce', 'Banner')";
+            String sql = "INSERT INTO students VALUES (1, 'Anna', 'Neri')";
             statement.executeUpdate(sql);
 
-            sql = "INSERT INTO students VALUES (2, 'Peter', 'Parker')";
+            sql = "INSERT INTO students VALUES (2, 'Marco', 'Rossi')";
             statement.executeUpdate(sql);
 
-            sql = "INSERT INTO students VALUES (3, 'Bruce', 'Wayne')";
+            sql = "INSERT INTO students VALUES (3, 'Benjamin', 'Schneider')";
             statement.executeUpdate(sql);
 
-            sql = "INSERT INTO students VALUES (4, 'Tony', 'Stark')";
+            sql = "INSERT INTO students VALUES (4, 'Gerald', 'Weber ')";
             statement.executeUpdate(sql);
 
             System.out.println("Done!");
@@ -103,22 +103,26 @@ public class Student {
 
             //create view italian_students and german_students
             String setView1 = "CREATE VIEW italian_students AS (SELECT * from students WHERE country = 'Italy');";
-            String setView2 = "CREATE VIEW german_students AS (SELECT * from students WHERE country = 'Germany');";
-
             statement.executeUpdate(setView1);
-            statement.executeUpdate(setView2);
-
 
             ResultSet resultSet2 = statement.executeQuery("SELECT * FROM italian_students;");
-            //ResultSet resultSet3 = statement.executeQuery("SELECT * FROM german_students;");
-
-            //System.out.println("Query for extract name and surname from VIEW:");
-            //Student student1 = new Student(resultSet2.getString("first_name"),resultSet2.getString("last_name"));
 
             System.out.println("Query for extract name and surname from VIEW italian_students:");
             while (resultSet2.next()){
-                //italianStudents.add(student1);
+                Student student1 = new Student(resultSet2.getString("first_name"),resultSet2.getString("last_name"));
+                italianStudents.add(student1);
                 System.out.println(resultSet2.getString("first_name") + " - " +  resultSet2.getString("last_name"));
+            }
+
+            String setView2 = "CREATE VIEW german_students AS (SELECT * from students WHERE country = 'Germany');";
+            statement.executeUpdate(setView2);
+
+            ResultSet resultSet3 = statement.executeQuery("SELECT * FROM german_students;");
+            System.out.println("Query for extract name and surname from VIEW german_students:");
+            while (resultSet3.next()){
+                Student student2 = new Student(resultSet3.getString("first_name"),resultSet3.getString("last_name"));
+                germanStudents.add(student2);
+                System.out.println(resultSet3.getString("first_name") + " - " +  resultSet3.getString("last_name"));
             }
 
         }catch (SQLException e){
@@ -133,5 +137,18 @@ public class Student {
         System.out.println("All surname from arrayList 'italian_students':");
         System.out.println(italianStudents);
 
+        System.out.println("-----------------------------------");
+        System.out.println("All surname from arrayList 'german_students':");
+        System.out.println(germanStudents);
+
+
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                '}';
     }
 }
