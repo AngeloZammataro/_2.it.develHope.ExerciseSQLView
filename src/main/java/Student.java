@@ -47,7 +47,7 @@ public class Student {
 
             Statement statement = connection.createStatement();
 
-            //Drop table and view
+            //Drop table and view for test
             String query0 = "DROP TABLE IF EXISTS `students`;";
             statement.execute(query0);
             String query01 = "DROP VIEW IF EXISTS `italian_students`;";
@@ -55,8 +55,8 @@ public class Student {
             String query02 = "DROP VIEW IF EXISTS `german_students`;";
             statement.execute(query02);
 
-            //Create a table students if not exists
-            String query = "CREATE TABLE IF NOT EXISTS students("
+            //Create a table students
+            String query = "CREATE TABLE students("
                     + "Student_id INT NOT NULL AUTO_INCREMENT, "
                     + "first_name VARCHAR (20) NOT NULL, "
                     + "last_name VARCHAR (20) NOT NULL, "
@@ -65,9 +65,11 @@ public class Student {
             statement.execute(query);
             System.out.println("The table was created!");
 
-            //Insert 4 record with name and surname
+            //Insert 4 record with name and surname for students
+
             System.out.println("Inserting records into the table");
 
+            //prepare String with placeholder
             String sqlX = "INSERT INTO students(first_name,last_name) "
                     + "VALUES(?,?)";
 
@@ -113,43 +115,44 @@ public class Student {
             System.out.println("Done!");
 
             //alter table, add new colummn "country"
-            String query1 = "ALTER TABLE students ADD country  CHAR(30)";
+            String query1 = "ALTER TABLE students ADD country  VARCHAR(30)";
 
             statement.execute(query1);
             System.out.println("Country column added to the table");
 
             System.out.println("Update students nationality...");
             String query2 = "UPDATE students " +
-                    "SET country = 'Italy' WHERE student_id in (1, 2)";
+                    "SET country = 'Italy' WHERE student_id IN (1, 2)";
             statement.executeUpdate(query2);
 
             String query3 = "UPDATE students " +
-                    "SET country = 'Germany' WHERE student_id in (3, 4)";
+                    "SET country = 'Germany' WHERE student_id IN (3, 4)";
             statement.executeUpdate(query3);
             System.out.println("Done!");
 
-            //create view italian_students and german_students
-            String setView1 = "CREATE VIEW italian_students AS (SELECT * FROM students WHERE country = 'Italy');";
-            statement.executeUpdate(setView1);
+            //create view italian_students
+            String setViewItaStd = "CREATE VIEW italian_students AS (SELECT * FROM students WHERE country = 'Italy');";
+            statement.executeUpdate(setViewItaStd);
 
-            ResultSet resultSet2 = statement.executeQuery("SELECT * FROM italian_students;");
+            ResultSet resultSetItaStd = statement.executeQuery("SELECT * FROM italian_students;");
 
             System.out.println("Query for extract name and surname from VIEW italian_students:");
-            while (resultSet2.next()){
-                Student student1FromDb = new Student(resultSet2.getString("first_name"),resultSet2.getString("last_name"));
+            while (resultSetItaStd.next()){
+                Student student1FromDb = new Student(resultSetItaStd.getString("first_name"),resultSetItaStd.getString("last_name"));
                 italianStudents.add(student1FromDb);
-                System.out.println(resultSet2.getString("first_name") + " - " +  resultSet2.getString("last_name"));
+                System.out.println(resultSetItaStd.getString("first_name") + " - " +  resultSetItaStd.getString("last_name"));
             }
 
-            String setView2 = "CREATE VIEW german_students AS (SELECT * from students WHERE country = 'Germany');";
-            statement.executeUpdate(setView2);
+            //create view german_students
+            String setViewGerStd = "CREATE VIEW german_students AS (SELECT * FROM students WHERE country = 'Germany');";
+            statement.executeUpdate(setViewGerStd);
 
-            ResultSet resultSet3 = statement.executeQuery("SELECT * FROM german_students;");
+            ResultSet resultSetGerStd = statement.executeQuery("SELECT * FROM german_students;");
             System.out.println("Query for extract name and surname from VIEW german_students:");
-            while (resultSet3.next()){
-                Student student2FromDb = new Student(resultSet3.getString("first_name"),resultSet3.getString("last_name"));
+            while (resultSetGerStd.next()){
+                Student student2FromDb = new Student(resultSetGerStd.getString("first_name"),resultSetGerStd.getString("last_name"));
                 germanStudents.add(student2FromDb);
-                System.out.println(resultSet3.getString("first_name") + " - " +  resultSet3.getString("last_name"));
+                System.out.println(resultSetGerStd.getString("first_name") + " - " +  resultSetGerStd.getString("last_name"));
             }
 
         }catch (SQLException e){
