@@ -36,6 +36,11 @@ public class Student {
         List<Student> italianStudents = new ArrayList<>();
         List<Student> germanStudents  = new ArrayList<>();
 
+        Student studentA = new Student("Anna","Neri");
+        Student studentB = new Student("Marco","Rossi");
+        Student studentC = new Student("Benjamin","Schneider");
+        Student studentD = new Student("Gerald","Weber");
+
         try {
 
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:33061/newdb","developer","123456");
@@ -63,6 +68,28 @@ public class Student {
             //Insert 4 record with name and surname
             System.out.println("Inserting records into the table");
 
+            String sqlX = "INSERT INTO students(first_name,last_name) "
+                    + "VALUES(?,?)";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlX,
+                    Statement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setString(1, studentA.getName());
+            preparedStatement.setString(2, studentA.getSurname());
+            preparedStatement.executeUpdate();
+
+            preparedStatement.setString(1, studentB.getName());
+            preparedStatement.setString(2, studentB.getSurname());
+            preparedStatement.executeUpdate();
+
+            preparedStatement.setString(1, studentC.getName());
+            preparedStatement.setString(2, studentC.getSurname());
+            preparedStatement.executeUpdate();
+
+            preparedStatement.setString(1, studentD.getName());
+            preparedStatement.setString(2, studentD.getSurname());
+            preparedStatement.executeUpdate();
+/*
             String sql = "INSERT INTO students VALUES (1, 'Anna', 'Neri')";
             statement.executeUpdate(sql);
 
@@ -74,9 +101,8 @@ public class Student {
 
             sql = "INSERT INTO students VALUES (4, 'Gerald', 'Weber ')";
             statement.executeUpdate(sql);
-
+*/
             System.out.println("Done!");
-
 
             ResultSet resultSet = statement.executeQuery("SELECT * FROM students");
             System.out.println("Query for extract name and surname:");
@@ -84,6 +110,7 @@ public class Student {
                     surnames.add(resultSet.getString("last_name"));
                     System.out.println(resultSet.getString("first_name") + " - " +  resultSet.getString("last_name"));
                 }
+            System.out.println("Done!");
 
             //alter table, add new colummn "country"
             String query1 = "ALTER TABLE students ADD country  CHAR(30)";
@@ -102,15 +129,15 @@ public class Student {
             System.out.println("Done!");
 
             //create view italian_students and german_students
-            String setView1 = "CREATE VIEW italian_students AS (SELECT * from students WHERE country = 'Italy');";
+            String setView1 = "CREATE VIEW italian_students AS (SELECT * FROM students WHERE country = 'Italy');";
             statement.executeUpdate(setView1);
 
             ResultSet resultSet2 = statement.executeQuery("SELECT * FROM italian_students;");
 
             System.out.println("Query for extract name and surname from VIEW italian_students:");
             while (resultSet2.next()){
-                Student student1 = new Student(resultSet2.getString("first_name"),resultSet2.getString("last_name"));
-                italianStudents.add(student1);
+                Student student1FromDb = new Student(resultSet2.getString("first_name"),resultSet2.getString("last_name"));
+                italianStudents.add(student1FromDb);
                 System.out.println(resultSet2.getString("first_name") + " - " +  resultSet2.getString("last_name"));
             }
 
@@ -120,8 +147,8 @@ public class Student {
             ResultSet resultSet3 = statement.executeQuery("SELECT * FROM german_students;");
             System.out.println("Query for extract name and surname from VIEW german_students:");
             while (resultSet3.next()){
-                Student student2 = new Student(resultSet3.getString("first_name"),resultSet3.getString("last_name"));
-                germanStudents.add(student2);
+                Student student2FromDb = new Student(resultSet3.getString("first_name"),resultSet3.getString("last_name"));
+                germanStudents.add(student2FromDb);
                 System.out.println(resultSet3.getString("first_name") + " - " +  resultSet3.getString("last_name"));
             }
 
@@ -135,20 +162,11 @@ public class Student {
 
         System.out.println("-----------------------------------");
         System.out.println("All surname from arrayList 'italian_students':");
-        System.out.println(italianStudents);
+        italianStudents.forEach(student -> System.out.println(student.getName() + " - " + student.getSurname()));
 
         System.out.println("-----------------------------------");
         System.out.println("All surname from arrayList 'german_students':");
-        System.out.println(germanStudents);
+        germanStudents.forEach(student -> System.out.println(student.getName() + " - " + student.getSurname()));
 
-
-    }
-
-    @Override
-    public String toString() {
-        return "Student{" +
-                "name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                '}';
     }
 }
